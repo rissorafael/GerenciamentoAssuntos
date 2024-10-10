@@ -1,0 +1,67 @@
+version: '3.4'
+
+services:
+  gerenciamentoassuntos.api:
+    image: ${DOCKER_REGISTRY-}gerenciamentoassuntosapi
+    networks:   
+        - elastic
+    build:
+      context: .
+      dockerfile: Application/GerenciamentoAssuntos/Dockerfile
+
+  gerenciamentoassuntosdatabase: 
+    image: postgres:latest
+    networks:   
+        - elastic
+    container_name: gerenciamentoassuntosdatabase
+    environment:
+    - POSTGRES_DB=GerenciamentoAssuntos
+    - POSTGRES_USER=postgres
+    - POSTGRES_PASSWORD=postgres
+    volumes:
+    - ./.containers/produts-db:/var/lib/postgresql/data
+    ports:
+    - "5432:5432"
+    
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.7.1
+    networks:
+      - elastic
+    container_name: gerenciamentoassuntos.elasticsearch
+    ports:
+     - 9200:9200
+    volumes:
+     - elasticsearch-data:/usr/share/elasticsearch/data
+    environment:
+    - xpack.security.enabled=false
+    - discovery.type=single-node
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.7.1
+    networks:
+      - elastic
+    container_name: gerenciamentoAssuntos.kibana
+    ports:
+     - 5601:5601
+    depends_on:
+    - elasticsearch
+    environment:
+     - ELASTICSEARCH_URL=http://gerenciamentoassuntos.elasticsearch:9200
+     
+  gerenciamentoAssuntos.pgadmin-compose:
+    image: dpage/pgadmin4
+    networks:
+      - elastic
+    container_name: gerenciamentoAssuntos.pgadmin-compose
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "renatogroff@yahoo.com.br"
+      PGADMIN_DEFAULT_PASSWORD: "PgAdmin2019!"
+    ports:
+      - "15432:80"
+
+volumes:
+   elasticsearch-data:
+
+networks:
+   elastic:
+    driver: bridge

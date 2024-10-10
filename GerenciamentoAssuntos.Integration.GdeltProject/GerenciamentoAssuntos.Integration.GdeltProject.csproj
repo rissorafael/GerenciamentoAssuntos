@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="GdeltProjectService" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Domain\GerenciamentoAssuntos.Domain\GerenciamentoAssuntos.Domain.csproj" />
+    <ProjectReference Include="..\GerenciamentoAssuntos.CrossCutting\GerenciamentoAssuntos.Infra.CrossCutting.csproj" />
+  </ItemGroup>
+
+</Project>
